@@ -112,6 +112,6 @@ def add_manager_user(merchantId):
 
 
 
-""" if __name__ == "__main__":
-   application.run(debug=True) """
+if __name__ == "__main__":
+   application.run(debug=False)
     
