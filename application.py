@@ -18,50 +18,50 @@ import os
 client = databaseconnection.connectDb()
 db = client["pinak"]
 
-app = Flask(__name__)
-app.secret_key  = b'inderjeet!@#$%4322'
-CORS(app)
+application = Flask(__name__)
+application.secret_key  = b'inderjeet!@#$%4322'
+CORS(application)
  
-@app.route("/")
+@application.route("/")
 def hello_world():
     # ind_time = datetime.now(timezone("Asia/Kolkata")).strftime('%d-%m-%Y %H:%M:%S')
     d = datetime.datetime.strptime("21/12/2008", "%d/%m/%Y").strftime('%d-%m-%Y')
     return json_util.dumps(d)
 
-@app.route("/upload-user-audio", methods=['POST'])
+@application.route("/upload-user-audio", methods=['POST'])
 def uploadAudios():
     response = uploadaudio.uploadmyaudio(request)
     return response
     
-@app.route("/uploaded-user-audio-list/<userId>/<merchantId>")
+@application.route("/uploaded-user-audio-list/<userId>/<merchantId>")
 def uploadedAudiosList(userId,merchantId):
     response = uploadaudio.getAllAudios(userId,merchantId)
     return response
 
-@app.route("/user-register", methods=['POST'])
+@application.route("/user-register", methods=['POST'])
 def add():
     response = userregister.add_new_user(request)
     return response
 
-@app.route("/user-login-data", methods=['POST'])
+@application.route("/user-login-data", methods=['POST'])
 def user_login():
     response = userlogin.login_data(request)
     return response
 
-@app.route("/single-audio-info",methods=['POST'])
+@application.route("/single-audio-info",methods=['POST'])
 def singleAudioInfo():
     response = uploadaudio.getAudiosInfo(request)
     return response    
 
 
-@app.route("/audio-list-by-date",methods=['POST'])
+@application.route("/audio-list-by-date",methods=['POST'])
 def AudioInfoDateWise():
     response = uploadaudio.getAudioBydate(request)
     return response    
 
 
-@app.route("/get-single-user-detail/<userid>/<merchantId>")            
-@app.route("/get-single-user-detail/<userid>")
+@application.route("/get-single-user-detail/<userid>/<merchantId>")            
+@application.route("/get-single-user-detail/<userid>")
 def get_single_user_detail(userid,merchantId=0):
     pinakuser = db.users
     if merchantId == 0:
@@ -76,7 +76,7 @@ def get_single_user_detail(userid,merchantId=0):
         
     return json_util.dumps(fUser)
 
-@app.route("/get-employee-user-list/<userid>/<merchatId>")
+@application.route("/get-employee-user-list/<userid>/<merchatId>")
 def get_manager_user_list(userid,merchatId):
     pinakuser = db.users
     adminDbDetail = pinakuser.find_one({"merchant_id":merchatId},{"user_phone":1,"_id":0})
@@ -87,7 +87,7 @@ def get_manager_user_list(userid,merchatId):
     user_list = userCollections.find({"user_name":{"$exists":True},"manager":{ "$ne": "0" }})
     return json_util.dumps(user_list)            
 
-@app.route("/get-admins-user-list/<userid>")
+@application.route("/get-admins-user-list/<userid>")
 def get_user_details(userid,merchatId=0):
     pinakuser = db.users
     fUser = pinakuser.find_one( { "_id" : ObjectId(userid) })
@@ -100,12 +100,12 @@ def get_user_details(userid,merchatId=0):
     return json_util.dumps(user_list)            
     
 
-@app.route("/add-new-user-level", methods=['POST'])
+@application.route("/add-new-user-level", methods=['POST'])
 def add_admin_user():
     response = addUserbysadmin.add_user_by_admin(request)
     return response
 
-@app.route("/add-new-employee-level/<merchantId>", methods=['POST'])
+@application.route("/add-new-employee-level/<merchantId>", methods=['POST'])
 def add_manager_user(merchantId):
     response = addUserbysadmin.add_user_by_manager(request,merchantId)
     return response
@@ -113,5 +113,5 @@ def add_manager_user(merchantId):
 
 
 if __name__ == "__main__":
-   app.run(debug=True)
+   application.run(debug=True)
     
